@@ -39,12 +39,12 @@
         SnakeIDs: ["snake1", "snake2"]
       };
 
-      var turn0 = JSON.parse(BattlesnakeRules.createInitialBoardState(JSON.stringify(initialBoardOpts)));
+      var initialBoardState = JSON.parse(BattlesnakeRules.createInitialBoardState(JSON.stringify(initialBoardOpts)));
 
-      console.log("Turn 0:", turn0);
+      console.log("Turn 0:", initialBoardState);
 
       var nextBoardOpts = {
-        PreviousState: turn0,
+        PreviousState: initialBoardState,
         SnakeMoves: [
           {ID: "snake1", Move: "left"},
           {ID: "snake2", Move: "right"}
