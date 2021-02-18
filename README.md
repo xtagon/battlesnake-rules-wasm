@@ -1,8 +1,8 @@
 # Battlesnake Rules Wasm
 
-This is a WebAssembly port of the [Battlesnake rules](rules).
+This is a WebAssembly port of the [Battlesnake rules][rules].
 
-The goal is to enable executing [Battlesnake](battlesnake) game rules in
+The goal is to enable executing [Battlesnake][battlesnake] game rules in
 environments such as web browsers, Node.js, and Electron.
 
 ## Status
