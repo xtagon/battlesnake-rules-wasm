@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <script src="../dist/wasm_exec.js"></script>
+    <script>
+      const WASM_URL = "../dist/main.wasm";
+      const go = new Go();
+
+      let wasm;
+
+      if ('instantiateStreaming' in WebAssembly) {
+        WebAssembly.instantiateStreaming(fetch(WASM_URL), go.importObject).then(function (obj) {
+          wasm = obj.instance;
+          go.run(wasm);
+        })
+      } else {
+        fetch(WASM_URL).then(resp =>
+          resp.arrayBuffer()
+        ).then(bytes =>
+          WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
+            wasm = obj.instance;
+            go.run(wasm);
+          })
+        )
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Battlesnake Rules Wasm Example</h1>
+
+    <p>Try using the JavaScript console to access the functions of `window.BattlesnakeRules`.</p>
+
+    <p>For example:</p>
+
+    <pre>
+      var width = 11;
+      var height = 11;
+      var snakeIDs = ["snake1", "snake2"];
+
+      var initialBoardState = JSON.parse(window.BattlesnakeRules.createInitialBoardState(width, height, JSON.stringify(snakeIDs)));
+
+      console.log("Turn 0:", initialBoardState);
+
+      var snakeMoves = [
+        {"ID": "snake1", "Move": "left"},
+        {"ID": "snake2", "Move": "right"}
+      ]
+
+      var nextBoardState = JSON.parse(window.BattlesnakeRules.createNextBoardState(JSON.stringify(initialBoardState), JSON.stringify(snakeMoves)));
+
+      console.log("Turn 1:", nextBoardState);
+    </pre>
+  </body>
+</html>
