@@ -74,3 +74,4 @@ This project is released under the terms of the [MIT License](LICENSE.txt).
 
 [battlesnake]: https://play.battlesnake.com/
 [rules]: https://github.com/BattlesnakeOfficial/rules
+[slack]: https://battlesnake.slack.com/
