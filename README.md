@@ -1,5 +1,4 @@
 # Battlesnake Rules Wasm
-========================
 
 This is a WebAssembly port of the [Battlesnake rules](rules).
 
