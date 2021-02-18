@@ -11,11 +11,9 @@ This project is experimental and your milage may vary.
 
 ## Known Issues
 
-- Poor Error handling (such as panics if arguments are passed incorrectly)
 - Poor memory management
 - Large WASM binary size
 - Use of Go's `syscall/js` which is also marked as experimental
-- Undocumented API for using exported functions
 - Lack of automated tests
 
 Contributions welcome!
@@ -52,11 +50,22 @@ will be set which is an object containing the exported functions. Typically the
 global will be scoped to `window` in browsers, or `global` in environments such
 as Node.js and Electron.
 
-The function signatures are not yet documented, so you will need to understand
-the exported functions in `main.go` in order to use them. Note that it is
-currently required to stringify and parse JSON arguments and return values on
-the consuming end, as JSON arguments are passed as JSON-encoded strings to the
-WASM functions, not as JS objects or Go structs.
+### Exported Functions
+
+All functions require a single argument, which is expected to be a JSON-encoded
+string. The JSON fields are interpreted as options for each function.
+
+Likewise, the return value will be a JSON-encoded string in the case of
+success, or null in the case of an error.
+
+See `examples/index.html` for some examples of the option signature for each
+available function. That example page also loads `main.wasm` file if you have
+compiled it, which means you can try out those functions straight from that
+page using your browser's JavaScript console.
+
+Documentation is currently sparse, so you may need to read the source code of
+`main.go` and possibly even the types defined upstream in the
+[BattlesnakeOfficial/rules][rules] source code.
 
 ## Open Invite
 

@@ -2,71 +2,85 @@ package main
 
 import (
   "encoding/json"
+  "fmt"
   "syscall/js"
   "github.com/BattlesnakeOfficial/rules"
 )
 
+type optsForInit struct {
+  Height int32
+  Width int32
+  SnakeIDs []string
+}
+
+type optsForNext struct {
+  PreviousState rules.BoardState
+  SnakeMoves []rules.SnakeMove
+}
+
 func createInitialBoardState(this js.Value, args []js.Value) interface{} {
-  ruleset := rules.StandardRuleset{}
-
-  width := args[0].Int()
-  height := args[1].Int()
-  snakeIDsJson := args[2].String()
-
-  var snakeIDs []string
-
-  err := json.Unmarshal([]byte(snakeIDsJson), &snakeIDs)
-
-  if err != nil {
-    return err.Error()
+  if len(args) != 1 || args[0].Type() != js.TypeString {
+    fmt.Println("unexpected arguments")
+    return js.Null()
   }
 
-  initialState, err := ruleset.CreateInitialBoardState(int32(width), int32(height), snakeIDs)
+  var opts optsForInit
+
+  err := json.Unmarshal([]byte(args[0].String()), &opts)
 
   if err != nil {
-    return err.Error()
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
+  ruleset := rules.StandardRuleset{}
+
+  initialState, err := ruleset.CreateInitialBoardState(opts.Width, opts.Height, opts.SnakeIDs)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
   }
 
   initialStateJson, err := json.Marshal(initialState)
 
   if err != nil {
-    return err.Error()
+    fmt.Println(err.Error())
+    return js.Null()
   }
 
   return string(initialStateJson)
 }
 
 func createNextBoardState(this js.Value, args[]js.Value) interface{} {
+  if len(args) != 1 || args[0].Type() != js.TypeString {
+    fmt.Println("unexpected arguments")
+    return js.Null()
+  }
+
+  var opts optsForNext
+
+  err := json.Unmarshal([]byte(args[0].String()), &opts)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
   ruleset := rules.StandardRuleset{}
 
-  prevStateJson := args[0].String()
-  movesJson := args[1].String()
-
-  var prevState rules.BoardState
-  var moves []rules.SnakeMove
-
-  err := json.Unmarshal([]byte(prevStateJson), &prevState)
+  nextState, err := ruleset.CreateNextBoardState(&opts.PreviousState, opts.SnakeMoves)
 
   if err != nil {
-    return err.Error()
-  }
-
-  err = json.Unmarshal([]byte(movesJson), &moves)
-
-  if err != nil {
-    return err.Error()
-  }
-
-  nextState, err := ruleset.CreateNextBoardState(&prevState, moves)
-
-  if err != nil {
-    return err.Error()
+    fmt.Println(err.Error())
+    return js.Null()
   }
 
   nextStateJson, err := json.Marshal(nextState)
 
   if err != nil {
-    return err.Error()
+    fmt.Println(err.Error())
+    return js.Null()
   }
 
   return string(nextStateJson)
