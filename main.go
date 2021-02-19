@@ -2,20 +2,55 @@ package main
 
 import (
   "encoding/json"
+  "errors"
   "fmt"
   "syscall/js"
   "github.com/BattlesnakeOfficial/rules"
 )
 
 type optsForInit struct {
+  RulesetName string
+  RulesetParams rulesetParams
   Height int32
   Width int32
   SnakeIDs []string
 }
 
 type optsForNext struct {
+  RulesetName string
+  RulesetParams rulesetParams
   PreviousState rules.BoardState
   SnakeMoves []rules.SnakeMove
+}
+
+// This struct holds params available to ANY supported ruleset. This is an
+// anti-pattern and is really just a lazy way to avoid figuring out how to
+// appease Go's lack of union types. When a ruleset is intantiated in
+// makeRuleset, only the params that it supports will be used.
+type rulesetParams struct {
+  // Applies to Standard, Solo, and Constrictor:
+  FoodSpawnChance int32
+  MinimumFood int32
+
+  // Royale and Squad params not yet supported
+}
+
+func makeRuleset(name string, params rulesetParams) (rules.Ruleset, error) {
+  standard := rules.StandardRuleset{
+    FoodSpawnChance: params.FoodSpawnChance,
+    MinimumFood: params.MinimumFood,
+  }
+
+  switch name {
+  case "standard":
+    return &standard, nil
+  case "solo":
+    return &rules.SoloRuleset{StandardRuleset: standard}, nil
+  case "constrictor":
+    return &rules.ConstrictorRuleset{StandardRuleset: standard}, nil
+  }
+
+  return nil, errors.New("unsupported ruleset")
 }
 
 func createInitialBoardState(this js.Value, args []js.Value) interface{} {
@@ -33,7 +68,12 @@ func createInitialBoardState(this js.Value, args []js.Value) interface{} {
     return js.Null()
   }
 
-  ruleset := rules.StandardRuleset{}
+  ruleset, err := makeRuleset(opts.RulesetName, opts.RulesetParams)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
 
   initialState, err := ruleset.CreateInitialBoardState(opts.Width, opts.Height, opts.SnakeIDs)
 
@@ -67,7 +107,12 @@ func createNextBoardState(this js.Value, args[]js.Value) interface{} {
     return js.Null()
   }
 
-  ruleset := rules.StandardRuleset{}
+  ruleset, err := makeRuleset(opts.RulesetName, opts.RulesetParams)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
 
   nextState, err := ruleset.CreateNextBoardState(&opts.PreviousState, opts.SnakeMoves)
 

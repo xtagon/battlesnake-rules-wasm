@@ -9,6 +9,14 @@ environments such as web browsers, Node.js, and Electron.
 
 This project is experimental and your milage may vary.
 
+## Supported Rulesets
+
+- [x] Standard
+- [x] Solo
+- [x] Constrictor
+- [ ] Squad
+- [ ] Royale
+
 ## Known Issues
 
 - Poor memory management
@@ -17,10 +25,6 @@ This project is experimental and your milage may vary.
 - Lack of automated tests
 
 Contributions welcome!
-
-## Supported Rulesets
-
-Presently only the "Standard" ruleset is supported.
 
 ## How to Use
 

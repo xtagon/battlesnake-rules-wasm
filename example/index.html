@@ -34,6 +34,11 @@
 
     <pre>
       var initialBoardOpts = {
+        RulesetName: "standard",
+        RulesetParams: {
+          FoodSpawnChance: 15,
+          MinimumFood: 1
+        },
         Width: 11,
         Height: 11,
         SnakeIDs: ["snake1", "snake2"]
@@ -44,6 +49,11 @@
       console.log("Turn 0:", initialBoardState);
 
       var nextBoardOpts = {
+        RulesetName: "standard",
+        RulesetParams: {
+          FoodSpawnChance: 15,
+          MinimumFood: 1
+        },
         PreviousState: initialBoardState,
         SnakeMoves: [
           {ID: "snake1", Move: "left"},
