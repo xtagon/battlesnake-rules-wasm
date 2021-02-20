@@ -23,6 +23,12 @@ type optsForNext struct {
   SnakeMoves []rules.SnakeMove
 }
 
+type optsForGameOver struct {
+  RulesetName string
+  RulesetParams rulesetParams
+  BoardState rules.BoardState
+}
+
 // This struct holds params available to ANY supported ruleset. This is an
 // anti-pattern and is really just a lazy way to avoid figuring out how to
 // appease Go's lack of union types. When a ruleset is intantiated in
@@ -131,11 +137,51 @@ func createNextBoardState(this js.Value, args[]js.Value) interface{} {
   return string(nextStateJson)
 }
 
+func isGameOver(this js.Value, args[]js.Value) interface{} {
+  if len(args) != 1 || args[0].Type() != js.TypeString {
+    fmt.Println("unexpected arguments")
+    return js.Null()
+  }
+
+  var opts optsForGameOver
+
+  err := json.Unmarshal([]byte(args[0].String()), &opts)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
+  ruleset, err := makeRuleset(opts.RulesetName, opts.RulesetParams)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
+  gameOverBool, err := ruleset.IsGameOver(&opts.BoardState)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
+  gameOverJson, err := json.Marshal(gameOverBool)
+
+  if err != nil {
+    fmt.Println(err.Error())
+    return js.Null()
+  }
+
+  return string(gameOverJson)
+}
+
 func makeExports() map[string]interface{} {
   exports := make(map[string]interface{})
 
   exports["createInitialBoardState"] = js.FuncOf(createInitialBoardState)
   exports["createNextBoardState"] = js.FuncOf(createNextBoardState)
+  exports["isGameOver"] = js.FuncOf(isGameOver)
 
   return exports
 }

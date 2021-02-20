@@ -64,6 +64,23 @@
       var nextBoardState = JSON.parse(BattlesnakeRules.createNextBoardState(JSON.stringify(nextBoardOpts)));
 
       console.log("Turn 1:", nextBoardState);
+
+      var gameOverOpts = {
+        RulesetName: "standard",
+        RulesetParams: {
+          FoodSpawnChance: 15,
+          MinimumFood: 1
+        },
+        BoardState: nextBoardState
+      }
+
+      var isGameOver = JSON.parse(BattlesnakeRules.isGameOver(JSON.stringify(gameOverOpts)))
+
+      if (isGameOver) {
+        console.log("Game over")
+      } else {
+        console.log("The game is not over yet")
+      }
     </pre>
   </body>
 </html>
