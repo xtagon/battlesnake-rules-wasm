@@ -4,11 +4,13 @@ import (
   "encoding/json"
   "errors"
   "fmt"
+  "math/rand"
   "syscall/js"
   "github.com/BattlesnakeOfficial/rules"
 )
 
 type optsForInit struct {
+  Seed int64
   RulesetName string
   RulesetParams rulesetParams
   Height int32
@@ -17,6 +19,7 @@ type optsForInit struct {
 }
 
 type optsForNext struct {
+  Seed int64
   RulesetName string
   RulesetParams rulesetParams
   PreviousState rules.BoardState
@@ -81,6 +84,8 @@ func createInitialBoardState(this js.Value, args []js.Value) interface{} {
     return js.Null()
   }
 
+  rand.Seed(opts.Seed);
+
   initialState, err := ruleset.CreateInitialBoardState(opts.Width, opts.Height, opts.SnakeIDs)
 
   if err != nil {
@@ -119,6 +124,8 @@ func createNextBoardState(this js.Value, args[]js.Value) interface{} {
     fmt.Println(err.Error())
     return js.Null()
   }
+
+  rand.Seed(opts.Seed);
 
   nextState, err := ruleset.CreateNextBoardState(&opts.PreviousState, opts.SnakeMoves)
 
