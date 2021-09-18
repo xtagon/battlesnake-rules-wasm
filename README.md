@@ -79,12 +79,12 @@ feel free to reach out!
 If you're using this library for a project, I'd love to hear about it.
 
 You can reach me at [xtagon@gmail.com](mailto:xtagon@gmail.com), or catch me in
-[Battlesnake Slack][slack] (username: `@xtagon`).
+[Battlesnake Discord][battlesnake-discord] (username: `@xtagon`).
 
 ## License
 
 This project is released under the terms of the [MIT License](LICENSE.txt).
 
 [battlesnake]: https://play.battlesnake.com/
+[battlesnake-discord]: https://play.battlesnake.com/discord/
 [rules]: https://github.com/BattlesnakeOfficial/rules
-[slack]: https://battlesnake.slack.com/
